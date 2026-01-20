@@ -9,7 +9,6 @@ import PageNotFound from "./global/PageNotFound";
 import UserDetailsPage from "./user/UserDetailsPage";
 import Users from "./user/Users";
 import MalpotIdForm from "./user/MalpotIdForm";
-import MalpotForm from "./user/MalpotPage";
 import MalpotPage from "./user/MalpotPage";
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
