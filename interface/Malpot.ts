@@ -8,4 +8,6 @@ export interface MalpotData {
   area: string;
   certifiedDetails: string;
   remarks?: string;
+  previousMunicipality: string;
+  previousWard?: string;
 }

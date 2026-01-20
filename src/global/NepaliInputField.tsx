@@ -5,58 +5,50 @@ import { useRef, useState, useEffect } from 'react';
 const NepaliInputField = ({ name, placeholder, className }: NepaliField) => {
     const [field, meta, helpers] = useField(name);
     const inputRef = useRef<HTMLInputElement>(null);
-    
+
     // State for buffering and shift tracking
     const [buffer, setBuffer] = useState('');
     const [buffStart, setBuffStart] = useState(false);
     const [shiftPressed, setShiftPressed] = useState(false);
 
     // Base mapping for normal keys
-    const baseMap: Record<string, string> = {
-        // First row
-        '`': 'ञ', '1': '१', '2': '२', '3': '३', '4': '४', '5': '५', 
-        '6': '६', '7': '७', '8': '८', '9': '९', '0': '०', 
-        '-': '-', '=': 'ृ',
-        
-        // Second row
-        'q': 'त्र', 'w': 'ध', 'e': 'भ', 'r': 'च', 't': 'त', 
-        'y': 'थ', 'u': 'ग', 'i': 'ष', 'o': 'य', 'p': 'उ', 
-        '[': 'े', ']': 'ै', '\\': '्',
-        
-        // Third row
-        'a': 'ब', 's': 'क', 'd': 'म', 'f': 'ा', 'g': 'न', 
-        'h': 'ज', 'j': 'व', 'k': 'प', 'l': 'ि', ';': 'र', 
-        '\'': '्',
-        
-        // Fourth row
-        'z': 'श', 'x': 'ह', 'c': 'अ', 'v': 'स', 'b': 'द', 
-        'n': 'ल', 'm': 'य', ',': ',', '.': '।', '/': 'य्',
-        
-        // Space
-        ' ': ' '
-    };
+const baseMap: Record<string, string> = {
+  '`': 'ञ', '1': '१', '2': '२', '3': '३', '4': '४', '5': '५',
+  '6': '६', '7': '७', '8': '८', '9': '९', '0': '०', '-': '-', '=': 'ृ',
 
-    // Shift mapping for uppercase/special characters
-    const shiftMap: Record<string, string> = {
-        // First row shifted
-        '~': 'ञ्', '!': 'ज्ञ', '@': 'द्ध', '#': 'घ', '$': 'द्घ', 
-        '%': 'झ', '^': 'ठ', '&': 'छ', '*': 'ट', '(': '(', 
-        ')': ')', '_': 'ः', '+': 'ृ',
-        
-        // Second row shifted
-        'Q': 'त्र', 'W': 'ध', 'E': 'भ', 'R': 'च', 'T': 'त', 
-        'Y': 'थ', 'U': 'ग', 'I': 'ष', 'O': 'य', 'P': 'ऊ', 
-        '{': 'ो', '}': 'ौ', '|': '्',
-        
-        // Third row shifted
-        'A': 'ब', 'S': 'क', 'D': 'म', 'F': 'ँ', 'G': 'न', 
-        'H': 'ज', 'J': 'व', 'K': 'प', 'L': 'ी', ':': 'र', 
-        '"': '्',
-        
-        // Fourth row shifted
-        'Z': 'श', 'X': 'ह', 'C': 'आ', 'V': 'स', 'B': 'द', 
-        'N': 'ल', 'M': 'य', '<': ',', '>': '.', '?': 'य्'
-    };
+  'q': 'ज्ञ', 'w': 'ङ', 'e': 'र', 'r': 'त', 't': 'य',
+  'y': 'उ', 'u': 'इ', 'i': 'ओ', 'o': 'प', 'p': 'श',
+  '[': 'द', ']': 'फ', '\\': '।',
+
+  'a': 'ब', 's': 'क', 'd': 'म', 'f': 'ा', 'g': 'न',
+  'h': 'ज', 'j': 'च', 'k': 'क', 'l': 'त', ';': 'स', '\'': 'ु',
+
+  'z': 'ष', 'x': 'ह', 'c': 'अ', 'v': 'ख', 'b': 'थ',
+  'n': 'ल', 'm': 'ण', ',': ',', '.': '।', '/': 'र',
+
+  ' ': ' '
+};
+
+
+
+
+const shiftMap: Record<string, string> = {
+  '~': '.', '!': '१', '@': '२', '#': '३', '$': '४', '%': '५',
+  '^': '६', '&': '७', '*': '८', '(': '९', ')': '०', '_': '-', '+': '=',
+
+  'Q': 'त्र', 'W': 'ध', 'E': 'भ', 'R': 'च', 'T': 'ट',
+  'Y': 'ठ', 'U': 'ग', 'I': 'ष', 'O': 'य', 'P': 'ऊ',
+  '{': 'ो', '}': 'ौ', '|': '्',
+
+  'A': 'भ', 'S': 'ख', 'D': 'ङ', 'F': 'ँ', 'G': 'ण',
+  'H': 'झ', 'J': 'ज्ञ', 'K': 'फ', 'L': 'ी', ':': 'र', '"': 'ू',
+
+  'Z': 'श्र', 'X': 'ष', 'C': 'आ', 'V': 'स', 'B': 'द',
+  'N': 'न', 'M': 'ं', '<': '«', '>': '»', '?': 'र्'
+};
+
+
+
 
     // Alt key combinations (from images)
     const altMap: Record<string, string> = {
@@ -96,7 +88,7 @@ const NepaliInputField = ({ name, placeholder, className }: NepaliField) => {
     };
 
     // Characters that initiate buffering
-    const init_check = ['e','I','i',')','f','c','Q','k','O','q','p','P','0','k+','e+','b','Alt+0165'];
+    const init_check = ['e', 'I', 'i', ')', 'f', 'c', 'Q', 'k', 'O', 'q', 'p', 'P', '0', 'k+', 'e+', 'b', 'Alt+0165'];
 
     // Track shift key state globally
     useEffect(() => {
@@ -120,14 +112,14 @@ const NepaliInputField = ({ name, placeholder, className }: NepaliField) => {
     const insertAtCursor = (text: string, back_track: number) => {
         const input = inputRef.current;
         if (!input) return;
-        
+
         const start = input.selectionStart || 0;
         const end = input.selectionEnd || 0;
         const value = field.value || '';
-        
+
         const newValue = value.substring(0, start - back_track) + text + value.substring(end);
         helpers.setValue(newValue);
-        
+
         // Move cursor to correct position
         setTimeout(() => {
             if (input) {
@@ -148,20 +140,23 @@ const NepaliInputField = ({ name, placeholder, className }: NepaliField) => {
         // Allow all control and navigation keys
         const controlKeys = [
             'Control', 'Alt', 'Meta', 'Escape', 'Tab', 'CapsLock',
-            'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 
+            'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
             'ArrowUp', 'ArrowDown', 'Enter', 'Home', 'End',
-            'PageUp', 'PageDown', 'Insert', 'Pause', 'ScrollLock', 
-            'PrintScreen', 'ContextMenu', 'NumLock', 'F1', 'F2', 
+            'PageUp', 'PageDown', 'Insert', 'Pause', 'ScrollLock',
+            'PrintScreen', 'ContextMenu', 'NumLock', 'F1', 'F2',
             'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10',
             'F11', 'F12'
         ];
-        
+
         if (controlKeys.includes(e.key)) {
             return;
         }
 
         e.preventDefault();
         const key = e.key;
+
+        const isAllowed = baseMap.hasOwnProperty(key.toLowerCase()) || shiftMap.hasOwnProperty(key);
+        if (!isAllowed) return;
 
         // Handle space separately
         if (key === ' ') {
@@ -213,8 +208,8 @@ const NepaliInputField = ({ name, placeholder, className }: NepaliField) => {
                 // Insert the buffer characters individually
                 for (let i = 0; i < buffer.length; i++) {
                     const bufKey = buffer[i];
-                    const bufChar = shiftPressed ? 
-                        (shiftMap[bufKey] || baseMap[bufKey.toLowerCase()] || bufKey) : 
+                    const bufChar = shiftPressed ?
+                        (shiftMap[bufKey] || baseMap[bufKey.toLowerCase()] || bufKey) :
                         (baseMap[bufKey] || bufKey);
                     insertAtCursor(bufChar, 0);
                 }
@@ -233,23 +228,23 @@ const NepaliInputField = ({ name, placeholder, className }: NepaliField) => {
         e.preventDefault();
         const pastedText = e.clipboardData.getData('text/plain');
         let convertedText = '';
-        
+
         // Convert each character individually
         for (let i = 0; i < pastedText.length; i++) {
             const char = pastedText[i];
             convertedText += baseMap[char] || shiftMap[char] || altMap[char] || char;
         }
-        
+
         const input = inputRef.current;
         if (!input) return;
-        
+
         const start = input.selectionStart || 0;
         const end = input.selectionEnd || 0;
         const value = field.value || '';
-        
+
         const newValue = value.substring(0, start) + convertedText + value.substring(end);
         helpers.setValue(newValue);
-        
+
         // Update cursor position
         setTimeout(() => {
             if (input) {
@@ -264,8 +259,8 @@ const NepaliInputField = ({ name, placeholder, className }: NepaliField) => {
         <>
             <div
                 className={`w-full border rounded-lg transition-all duration-200 bg-gray-50 ${meta.touched && meta.error
-                        ? "border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent"
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent"
                     }`}
             ></div>
             <Field

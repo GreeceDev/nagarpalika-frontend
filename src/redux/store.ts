@@ -9,12 +9,12 @@ import { combineReducers } from "redux";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["users", "malpot"],
+  whitelist: ["users", "malpots"],
 };
 
 const rootReducer = combineReducers({
   users: userReducer,
-  malpot: malpotReducer,
+  malpots: malpotReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

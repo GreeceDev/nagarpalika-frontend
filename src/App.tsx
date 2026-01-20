@@ -10,6 +10,7 @@ import UserDetailsPage from "./user/UserDetailsPage";
 import Users from "./user/Users";
 import MalpotIdForm from "./user/MalpotIdForm";
 import MalpotForm from "./user/MalpotPage";
+import MalpotPage from "./user/MalpotPage";
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
@@ -30,7 +31,7 @@ const App = () => {
               <Route path="/user-details" element={<UserDetailsPage />} />
               <Route path="/users" element={<Users />} />
               <Route path="/sifarisform" element={<MalpotIdForm />} />
-              <Route path="/sifaris" element={<MalpotForm />} />
+              <Route path="/sifaris" element={<MalpotPage />} />
             </>
           )}
 

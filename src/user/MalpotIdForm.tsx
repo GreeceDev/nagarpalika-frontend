@@ -1,9 +1,12 @@
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
-import { Form, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-import { Formik } from "formik";
+import { Form, Formik } from "formik";
 import { ErrorMessage, Field } from "formik";
+import { addMalpot } from "../redux/slices/malpotSlice";
+import type { MalpotData } from "../../interface/Malpot";
+import { useDispatch } from "react-redux";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Required"),
@@ -14,6 +17,8 @@ const validationSchema = Yup.object({
   area: Yup.string().required("Required"),
   certifiedDetails: Yup.string().required("Required"),
   remarks: Yup.string(),
+  previousMunicipality: Yup.string().required("Required"),
+  previousWard: Yup.string().required("Required"),
 });
 
 const initialValues = {
@@ -26,15 +31,16 @@ const initialValues = {
   area: "",
   certifiedDetails: "",
   remarks: "",
+  previousMunicipality: "",
+  previousWard: "",
 };
 
 const MalpotIdForm = () => {
   const navigate = useNavigate();
+  const dispatch =  useDispatch();
 
-  const onSubmit = (_values: typeof initialValues, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
-    setSubmitting(true);
-    // Dispatch or other logic here isf needed
-    setSubmitting(false);
+  const onSubmit = (values:MalpotData) => {
+    dispatch (addMalpot(values));
     navigate("/sifaris"); // Navigate to MalpotPage route
   };
 
@@ -57,13 +63,11 @@ const MalpotIdForm = () => {
         {/* Form Section */}
         <div className="bg-white rounded-b-xl shadow-lg border-x border-b border-gray-200">
           <div className="p-8">
-              <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={(values, formikHelpers) => onSubmit(values, formikHelpers)}
-                validateOnChange={false}
-                validateOnBlur={false}
-              >
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={onSubmit}
+            >
                 <Form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
@@ -93,6 +97,38 @@ const MalpotIdForm = () => {
                     />
                     <ErrorMessage
                       name="address"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      सबिक गा.पा.:
+                    </label>
+                    <Field
+                      name="previousMunicipality"
+                      placeholder="सबिक गा.पा. प्रविष्ट गर्नुहोस्"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    />
+                    <ErrorMessage
+                      name="previousMunicipality"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      सबिक गा.पा. वडा नं.:
+                    </label>
+                    <Field
+                      name="previousWard"
+                      placeholder="सबिक गा.पा. वडा नं. प्रविष्ट गर्नुहोस्"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    />
+                    <ErrorMessage
+                      name="previousWard"
                       component="div"
                       className="text-red-500 text-sm mt-1"
                     />
